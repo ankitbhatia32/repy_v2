@@ -119,6 +119,8 @@ import nonportable
 import safe # Used to get SafeDict
 import tracebackrepy
 import virtual_namespace
+import ipv6hostname
+import multiply_test
 
 from exception_hierarchy import *
 
@@ -597,6 +599,14 @@ class DictOrSafeDict(ObjectProcessor):
 # the basis for what is populated in the user context. Anything function
 # defined here will be wrapped and made available to untrusted user code.
 USERCONTEXT_WRAPPER_INFO = {
+  'muly' :
+      {'func' : multiply_test.multiplication,
+       'args' : [Int()],
+       'return' : Int()},
+  'ipv6addr' :
+      {'func' : ipv6hostname.getAddrip6,
+       'args' : [Str()],
+       'return' : ListOfStr()},
   'gethostbyname' :
       {'func' : emulcomm.gethostbyname,
        'args' : [Str()],
