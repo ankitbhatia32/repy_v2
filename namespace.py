@@ -606,11 +606,11 @@ USERCONTEXT_WRAPPER_INFO = {
   'ipv6addr' :
       {'func' : ipv6hostname.getAddrip6,
        'args' : [Str()],
-       'return' : ListOfStr()},
+       'return' : List()},
   'gethostbyname' :
       {'func' : emulcomm.gethostbyname,
        'args' : [Str()],
-       'return' : Str()},
+       'return' : ListOfStr()},
   'getmyip' :
       {'func' : emulcomm.getmyip,
        'args' : [],
