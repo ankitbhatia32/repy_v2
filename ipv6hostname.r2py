@@ -1,2 +1,2 @@
 a = ipv6addr("www.yahoo.com")
-log(a)
+log([a])
