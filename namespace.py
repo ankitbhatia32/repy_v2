@@ -121,6 +121,8 @@ import tracebackrepy
 import virtual_namespace
 import ipv6hostname
 import multiply_test
+import UDP_server
+import UDP_client
 
 from exception_hierarchy import *
 
@@ -599,6 +601,14 @@ class DictOrSafeDict(ObjectProcessor):
 # the basis for what is populated in the user context. Anything function
 # defined here will be wrapped and made available to untrusted user code.
 USERCONTEXT_WRAPPER_INFO = {
+  'UDP_client_test' :
+      {'func' : UDP_client.udpclientconnect,
+       'args' : [],
+       'return' : Int()},
+  'UDP_server_test' :
+      {'func' : UDP_server.udpserverconnect,
+       'args' : [],
+       'return' : Str()},
   'muly' :
       {'func' : multiply_test.multiplication,
        'args' : [Int()],
