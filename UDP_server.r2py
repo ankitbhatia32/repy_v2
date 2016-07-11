@@ -1,0 +1,2 @@
+a = UDP_server_test()
+log(a)
