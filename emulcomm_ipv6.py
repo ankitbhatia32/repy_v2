@@ -20,7 +20,7 @@ import repy_constants
 from exception_hierarchy import *
 
 
-_BOUND_SOCKETS = {}
+_BOUND_SOCKETS_IPv6 = {}
 
 user_ip_interface_preferences_ipv6 = False
 
@@ -31,11 +31,6 @@ user_specified_ip_interface_list_ipv6 = []
 allowediplist_ipv6 =[]
 
 cachelock = threading.lock()
-
-def ipv6_address_support():
-  
-  if not socket.has_ipv6:
-  	raise Exception("IPv6 is not supported")
 
 
 def _ip_is_allowed_ipv6(ip):
@@ -346,8 +341,15 @@ def _is_valid_ipv6_address(ipaddr):
     True if a valid IP, False otherwise.
   """
   # Argument must be of the string type
-   
-
+  if not type(ipaddr) == str:
+    return False
+  
+  # A valid IPv6 address has   
+  try:
+    socket.inet_pton(socket.AF_INET6, ipaddr)
+  except socket.error   # not a valid IPv6 address
+    return False
+  return True
 
 # Armon: This is used for semantics, to determine if the given port is valid
 def _is_valid_network_port(port):
@@ -373,7 +375,10 @@ def _is_valid_network_port(port):
 # Used to decide if an IP is the loopback IP or not.   This is needed for 
 # accounting
 def _is_loopback_ipaddr(host):
-  
+  if not host.startswith('::1'):
+    return False
+  else:
+    return True
 
 # Checks if binding to the local port is allowed
 # type should be "TCP" or "UDP".
@@ -482,7 +487,7 @@ def getmyip():
   # answer.
         
   # Try each stable IP  
-  for ip_addr in repy_constants.STABLE_PUBLIC_IPS:  
+  for ip_addr in repy_constants.STABLE_PUBLIC_IPS_IPv6:  
     try:
       # Try to resolve using the current connection type and 
       # stable IP, using port 80 since some platforms panic
@@ -703,8 +708,8 @@ def sendmessage(destip, destport, message, localip, localport):
   try:
     sock = None
 
-    if ("UDP", localip, localport) in _BOUND_SOCKETS:
-      sock = _BOUND_SOCKETS[("UDP", localip, localport)]       
+    if ("UDP", localip, localport) in _BOUND_SOCKETS_IPv6:
+      sock = _BOUND_SOCKETS_IPv6[("UDP", localip, localport)]       
     else:
       # Get the socket
       sock = _get_udp_socket(localip, localport)      
@@ -725,7 +730,7 @@ def sendmessage(destip, destport, message, localip, localport):
         
     try:
       # If we're borrowing the socket, closing is not appropriate.
-      if not ("UDP", localip, localport) in _BOUND_SOCKETS:
+      if not ("UDP", localip, localport) in _BOUND_SOCKETS_IPv6:
         sock.close()
     except:
       pass
@@ -816,9 +821,9 @@ def listenformessage(localip, localport):
     # Register this socket as an insocket
     nanny.tattle_add_item('insockets',id(sock))
 
-    # Add the socket to _BOUND_SOCKETS so that we can 
+    # Add the socket to _BOUND_SOCKETS_IPv6 so that we can 
     # preserve send functionality on this port.
-    _BOUND_SOCKETS[("UDP", localip, localport)] = sock
+    _BOUND_SOCKETS_IPv6[("UDP", localip, localport)] = sock
 
   except Exception, e:    
 
