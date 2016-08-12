@@ -1016,7 +1016,7 @@ def _timed_conn_initialize(localip,localport,destip,destport, timeout):
 
 
 # Public interface!!!
-def openconnection(destip, destport,localip, localport, timeout):
+def openconnection_ipv6(destip, destport,localip, localport, timeout):
   """
     <Purpose>
       Opens a connection, returning a socket-like object
@@ -1177,7 +1177,7 @@ def openconnection(destip, destport,localip, localport, timeout):
   return emul_sock
 
 
-def listenforconnection(localip, localport):
+def listenforconnection_ipv6(localip, localport):
   """
   <Purpose>
     Sets up a TCPServerSocket to recieve incoming TCP connections. 
