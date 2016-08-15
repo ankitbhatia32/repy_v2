@@ -444,7 +444,7 @@ def getAddripv6(name):
     raise NetworkAddressError("The hostname '"+name+"' could not be resolved.")
 
 # Public interface
-def getmyip():
+def getmyip_ipv6():
   """
    <Purpose>
       Provides the IP of this computer on its public facing interface.  
@@ -617,7 +617,7 @@ def _cleanup_socket(self):
 
 
 # Public interface!!!
-def sendmessage(destip, destport, message, localip, localport):
+def sendmessage_ipv6(destip, destport, message, localip, localport):
   """
    <Purpose>
       Send a message to a host / port
@@ -749,7 +749,7 @@ def sendmessage(destip, destport, message, localip, localport):
 
 
 # Public interface!!!
-def listenformessage(localip, localport):
+def listenformessage_ipv6(localip, localport):
   """
     <Purpose>
         Sets up a UDPServerSocket to receive incoming UDP messages.
@@ -1447,7 +1447,7 @@ class EmulatedSocket:
     self.socketobj = None
 
 
-  def close(self):
+  def close_ipv6(self):
     """
       <Purpose>
         Closes a socket.   Pending remote recv() calls will return with the 
@@ -1759,7 +1759,7 @@ class UDPServerSocket:
     # reference here yet
     sock.setblocking(0)
 
-  def getmessage(self):
+  def getmessage_ipv6(self):
     """
     <Purpose>
         Obtains an incoming message that was sent to an IP and port.
@@ -1839,7 +1839,7 @@ class UDPServerSocket:
 
 
 
-  def close(self):
+  def close_ipv6(self):
     """
     <Purpose>
         Closes a socket that is listening for messages.
@@ -1935,7 +1935,7 @@ class TCPServerSocket (object):
         
 
 
-  def getconnection(self):
+  def getconnection_ipv6(self):
     """
     <Purpose>
       Accepts an incoming connection to a listening TCP socket.
@@ -2029,7 +2029,7 @@ class TCPServerSocket (object):
       socket_lock.release()
 
 
-  def close(self):
+  def close_ipv6(self):
     """
     <Purpose>
       Closes the listening TCP socket.
