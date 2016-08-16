@@ -51,6 +51,10 @@ STABLE_PUBLIC_IPS = ["18.7.22.69",      # M.I.T
 
 # Stable IPv6 Addresses 
 STABLE_PUBLIC_IPS_IPv6 = ["2404:6800:4009:806::200e",    # www.google.com
-                         "2001:4998:58:c02::a9"]         # www.yahoo.com
+                         "2001:4998:58:c02::a9",		 # www.yahoo.com
+                         "2404:6800:4009:806::200e",	 # www.youtube.com
+                         "2607:f6d0:0:925a::ab43:d7c8",	 # www.stanford.edu
+                         "2607:f140:0:82::10",			 # www.berkeley.edu
+                         "2607:f010:2e8:228::ff:fe00:152"] # www.ucla.edu         
 
                          
