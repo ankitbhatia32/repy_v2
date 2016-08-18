@@ -662,7 +662,7 @@ USERCONTEXT_WRAPPER_INFO = {
        'return' : UDPServerSocket()},
   'openconnection_ipv6' :
       {'func' : emulcomm_ipv6.openconnection_ipv6,
-       'args' : [Str(), Int(), Str(), Int(), Float()]
+       'args' : [Str(), Int(), Str(), Int(), Float()],
        'return' : TCPSocket()},
   'openconnection' :
       {'func' : emulcomm.openconnection,
