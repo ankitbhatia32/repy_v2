@@ -55,47 +55,59 @@ def update_ip_cache_ipv6():
   global user_ip_interface_preferences_ipv6
   global user_specified_ip_interface_list_ipv6
   global allow_nonspecified_ips_ipv6
-
+  
+  # If there is no preference, this is a no-op
   if not user_ip_interface_preferences_ipv6:
-  	return
-
+    return
+    
+  # Acquire the lock to update the cache
   cachelock.acquire()
-
-  try:
+  
+  # If there is any exception release the cachelock
+  try:  
+    # Stores the IP's
     allowed_list_ipv6 = []
+  
+    # Iterate through the allowed list, handle each element
+    for (is_ip_addr_ipv6, value) in user_specified_ip_interface_list_ipv6:
+      # Handle normal IP's
+      if is_ip_addr_ipv6:
+        _unique_append(allowed_list_ipv6, value)
+    
+      # Handle interfaces
+      else:
+        try:
+          # Get the IP's associated with the NIC
+          interface_ips = nonportable.os_api.get_interface_ip_addresses(value)
+          for interface_ip in interface_ips:
+            _unique_append(allowed_list_ipv6, interface_ip)
+        except:
+          # Catch exceptions if the NIC does not exist
+          pass
+  
+    # This will store all the IP's that we are able to bind to
+    bindable_list = []
+        
+    # Try binding to every ip
+    for ip in allowed_list_ipv6:
+      sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+      try:
+        sock.bind((ip,0))
+      except:
+        pass # Not a good ip, skip it
+      else:
+        bindable_list.append(ip) # This is a good ip, store it
+      finally:
+        sock.close()
 
-  	for (is_ip_addr_ipv6, value) in user_specified_ip_interface_list_ipv6:
-  	  if is_ip_addr_ipv6:
-  	    _unique_append(allowed_list_ipv6, value)
-
-  	  else:
-  	  	try:
-  	  	  interface_ips = nonportable.os_api.get_interface_ip_addresses(value)
-  	  	  for interface_ip in interface_ips:
-  	  	  	_unique_append(allowed_list_ipv6, interface_ip)
-
-  	  	  except:
-  	  	    pass
-
-  	  bindable_list = []
-
-  	  for ip in allowed_list_ipv6:
-  	  	sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-  	  	try:
-  	  	  sock.bind((ip,0))
-  	  	except:
-  	  	  pass
-  	  	else:
-  	  	  bindable_list.append(ip)
-  	  	finally:
-  	  	  sock.close()
-
-
-  	  	_unique_append(bindable_list, '::1')
-
-  	  	allowediplist_ipv6 = bindable_list
-
-  finally:
+    # Add loopback
+    _unique_append(bindable_list, "::1")
+  
+    # Update the global cache
+    allowediplist_ipv6 = bindable_list
+  
+  finally:      
+    # Release the lock
     cachelock.release()
 
 #################### General Purpose socket functions ######################
