@@ -9,7 +9,7 @@ import threading
 
 threading.hasattr = hasattr
 
-import hashexit
+import harshexit
 import nonportable 
 import tracebackrepy
 import nanny
@@ -30,7 +30,7 @@ user_specified_ip_interface_list_ipv6 = []
 
 allowediplist_ipv6 =[]
 
-cachelock = threading.lock()
+cachelock = threading.Lock()
 
 
 def _ip_is_allowed_ipv6(ip):
@@ -359,7 +359,7 @@ def _is_valid_ipv6_address(ipaddr):
   # A valid IPv6 address has   
   try:
     socket.inet_pton(socket.AF_INET6, ipaddr)
-  except socket.error   # not a valid IPv6 address
+  except socket.error:   # not a valid IPv6 address
     return False
   return True
 
@@ -1516,7 +1516,7 @@ class EmulatedSocket:
       socket_lock.release()
 
 
-  def recv(self,bytes):
+  def recv_ipv6(self,bytes):
     """
       <Purpose>
         Receives data from a socket.   It may receive fewer bytes than 
@@ -1606,7 +1606,7 @@ class EmulatedSocket:
       socket_lock.release()
 
 
-  def send(self,message):
+  def send_ipv6(self,message):
     """
       <Purpose>
         Sends data on a socket.   It may send fewer bytes than requested.   
