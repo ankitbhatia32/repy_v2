@@ -186,8 +186,11 @@ def _init_namespace():
 file_object_wrapped_functions_dict = {}
 lock_object_wrapped_functions_dict = {}
 tcp_socket_object_wrapped_functions_dict = {}
+tcp_socket_object_wrapped_functions_dict_ipv6 = {}
 tcp_server_socket_object_wrapped_functions_dict = {}
+tcp_server_socket_object_wrapped_functions_dict_ipv6 = {}
 udp_server_socket_object_wrapped_functions_dict = {}
+udp_server_socket_object_wrapped_functions_dict_ipv6 = {}
 virtual_namespace_object_wrapped_functions_dict = {}
 
 def _prepare_wrapped_functions_for_object_wrappers():
@@ -200,8 +203,11 @@ def _prepare_wrapped_functions_for_object_wrappers():
   objects_tuples = [(FILE_OBJECT_WRAPPER_INFO, file_object_wrapped_functions_dict),
                     (LOCK_OBJECT_WRAPPER_INFO, lock_object_wrapped_functions_dict),
                     (TCP_SOCKET_OBJECT_WRAPPER_INFO, tcp_socket_object_wrapped_functions_dict),
+                    (TCP_SOCKET_OBJECT_WRAPPER_INFO_IPv6, tcp_socket_object_wrapped_functions_dict_ipv6),
                     (TCP_SERVER_SOCKET_OBJECT_WRAPPER_INFO, tcp_server_socket_object_wrapped_functions_dict),
+                    (TCP_SERVER_SOCKET_OBJECT_WRAPPER_INFO_IPv6, tcp_server_socket_object_wrapped_functions_dict_ipv6),
                     (UDP_SERVER_SOCKET_OBJECT_WRAPPER_INFO, udp_server_socket_object_wrapped_functions_dict),
+                    (UDP_SERVER_SOCKET_OBJECT_WRAPPER_INFO_IPv6, udp_server_socket_object_wrapped_functions_dict_ipv6), 
                     (VIRTUAL_NAMESPACE_OBJECT_WRAPPER_INFO, virtual_namespace_object_wrapped_functions_dict)]
 
   for description_dict, wrapped_func_dict in objects_tuples:
@@ -518,6 +524,18 @@ class UDPServerSocket(ObjectProcessor):
 
 
 
+class UDPServerSocket_ipv6(ObjectProcessor):
+  """Allows UDPServerSocket objects."""
+
+  def check(self, val):
+    if not isinstance(val, emulcomm_ipv6.UDPServerSocket):
+      raise RepyArgumentError("Invalid type %s" % type(val))
+
+
+
+  def wrap(self, val):
+    return NamespaceObjectWrapper("socket", val, udp_server_socket_object_wrapped_functions_dict_ipv6)
+
 
 
 class TCPServerSocket(ObjectProcessor):
@@ -533,6 +551,17 @@ class TCPServerSocket(ObjectProcessor):
     return NamespaceObjectWrapper("socket", val, tcp_server_socket_object_wrapped_functions_dict)
 
 
+class TCPServerSocket_ipv6(ObjectProcessor):
+  """Allows TCPServerSocket objects."""
+
+  def check(self, val):
+    if not isinstance(val, emulcomm_ipv6.TCPServerSocket):
+      raise RepyArgumentError("Invalid type %s" % type(val))
+
+
+
+  def wrap(self, val):
+    return NamespaceObjectWrapper("socket", val, tcp_server_socket_object_wrapped_functions_dict_ipv6)
 
 
 
@@ -549,6 +578,17 @@ class TCPSocket(ObjectProcessor):
     return NamespaceObjectWrapper("socket", val, tcp_socket_object_wrapped_functions_dict)
 
 
+class TCPSocket_ipv6(ObjectProcessor):
+  """Allows TCPSocket objects."""
+
+  def check(self, val):
+    if not isinstance(val, emulcomm_ipv6.EmulatedSocket):
+      raise RepyArgumentError("Invalid type %s" % type(val))
+
+
+
+  def wrap(self, val):
+    return NamespaceObjectWrapper("socket", val, tcp_socket_object_wrapped_functions_dict_ipv6)
 
 
 
@@ -663,7 +703,7 @@ USERCONTEXT_WRAPPER_INFO = {
   'openconnection_ipv6' :
       {'func' : emulcomm_ipv6.openconnection_ipv6,
        'args' : [Str(), Int(), Str(), Int(), Float()],
-       'return' : TCPSocket()},
+       'return' : TCPSocket_ipv6()},
   'openconnection' :
       {'func' : emulcomm.openconnection,
        'args' : [Str(), Int(), Str(), Int(), Float()],
@@ -673,7 +713,7 @@ USERCONTEXT_WRAPPER_INFO = {
   'listenforconnection_ipv6' :
       {'func' : emulcomm_ipv6.listenforconnection_ipv6,
        'args' : [Str(), Int()],
-       'return' : TCPServerSocket()},
+       'return' : TCPServerSocket_ipv6()},
   'listenforconnection' :
       {'func' : emulcomm.listenforconnection,
        'args' : [Str(), Int()],
@@ -748,28 +788,31 @@ FILE_OBJECT_WRAPPER_INFO = {
 }
 
 TCP_SOCKET_OBJECT_WRAPPER_INFO = {
-  'close_ipv6' :
-      {'func' : emulcomm_ipv6.EmulatedSocket.close_ipv6,
-       'args' : [],
-       'return' : Bool()},
   'close' :
       {'func' : emulcomm.EmulatedSocket.close,
        'args' : [],
        'return' : Bool()},
-  'recv_ipv6' :
-      {'func' : emulcomm_ipv6.EmulatedSocket.recv_ipv6,
-       'args' : [Int(min=1)],
-       'return' : Str()},
   'recv' :
       {'func' : emulcomm.EmulatedSocket.recv,
        'args' : [Int(min=1)],
        'return' : Str()},
-  'send_ipv6' :
-      {'func' : emulcomm_ipv6.EmulatedSocket.send_ipv6,
-       'args' : [Str()],
-       'return' : Int(min=0)},
   'send' :
       {'func' : emulcomm.EmulatedSocket.send,
+       'args' : [Str()],
+       'return' : Int(min=0)},
+}
+
+TCP_SOCKET_OBJECT_WRAPPER_INFO_IPv6 = {
+  'close' :
+      {'func' : emulcomm_ipv6.EmulatedSocket.close,
+       'args' : [],
+       'return' : Bool()},
+  'recv' :
+      {'func' : emulcomm_ipv6.EmulatedSocket.recv,
+       'args' : [Int(min=1)],
+       'return' : Str()},
+  'send' :
+      {'func' : emulcomm_ipv6.EmulatedSocket.send,
        'args' : [Str()],
        'return' : Int(min=0)},
 }
@@ -777,39 +820,45 @@ TCP_SOCKET_OBJECT_WRAPPER_INFO = {
 # TODO: Figure out which real object should be wrapped. It doesn't appear
 # to be implemented yet as there is no "getconnection" in the repy_v2 source.
 TCP_SERVER_SOCKET_OBJECT_WRAPPER_INFO = {
-  'close_ipv6' :
-      {'func' : emulcomm_ipv6.TCPServerSocket.close_ipv6,
-       'args' : [],
-       'return' : Bool()},
   'close' :
       {'func' : emulcomm.TCPServerSocket.close,
        'args' : [],
        'return' : Bool()},
-  'getconnection_ipv6' :
-      {'func' : emulcomm_ipv6.TCPServerSocket.getconnection_ipv6,
-       'args' : [],
-       'return' : (Str(), Int(), TCPSocket())},
   'getconnection' :
       {'func' : emulcomm.TCPServerSocket.getconnection,
        'args' : [],
        'return' : (Str(), Int(), TCPSocket())},
 }
 
-UDP_SERVER_SOCKET_OBJECT_WRAPPER_INFO = {
-  'close_ipv6' :
-      {'func' : emulcomm_ipv6.UDPServerSocket.close_ipv6,
+TCP_SERVER_SOCKET_OBJECT_WRAPPER_INFO_IPv6 = {
+  'close' :
+      {'func' : emulcomm_ipv6.TCPServerSocket.close,
        'args' : [],
        'return' : Bool()},
+  'getconnection' :
+      {'func' : emulcomm_ipv6.TCPServerSocket.getconnection,
+       'args' : [],
+       'return' : (Str(), Int(), TCPSocket())},
+}
+
+UDP_SERVER_SOCKET_OBJECT_WRAPPER_INFO = {
   'close' :
       {'func' : emulcomm.UDPServerSocket.close,
        'args' : [],
        'return' : Bool()},
-  'getmessage_ipv6' :
-      {'func' : emulcomm_ipv6.UDPServerSocket.getmessage_ipv6,
-       'args' : [],
-       'return' : (Str(), Int(), Str())},
   'getmessage' :
       {'func' : emulcomm.UDPServerSocket.getmessage,
+       'args' : [],
+       'return' : (Str(), Int(), Str())},
+}
+
+UDP_SERVER_SOCKET_OBJECT_WRAPPER_INFO_IPv6 = {
+  'close' :
+      {'func' : emulcomm_ipv6.UDPServerSocket.close,
+       'args' : [],
+       'return' : Bool()},
+  'getmessage' :
+      {'func' : emulcomm_ipv6.UDPServerSocket.getmessage,
        'args' : [],
        'return' : (Str(), Int(), Str())},
 }
