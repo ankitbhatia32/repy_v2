@@ -1459,7 +1459,7 @@ class EmulatedSocket:
     self.socketobj = None
 
 
-  def close_ipv6(self):
+  def close(self):
     """
       <Purpose>
         Closes a socket.   Pending remote recv() calls will return with the 
@@ -1516,7 +1516,7 @@ class EmulatedSocket:
       socket_lock.release()
 
 
-  def recv_ipv6(self,bytes):
+  def recv(self,bytes):
     """
       <Purpose>
         Receives data from a socket.   It may receive fewer bytes than 
@@ -1606,7 +1606,7 @@ class EmulatedSocket:
       socket_lock.release()
 
 
-  def send_ipv6(self,message):
+  def send(self,message):
     """
       <Purpose>
         Sends data on a socket.   It may send fewer bytes than requested.   
@@ -1771,7 +1771,7 @@ class UDPServerSocket:
     # reference here yet
     sock.setblocking(0)
 
-  def getmessage_ipv6(self):
+  def getmessage(self):
     """
     <Purpose>
         Obtains an incoming message that was sent to an IP and port.
@@ -1851,7 +1851,7 @@ class UDPServerSocket:
 
 
 
-  def close_ipv6(self):
+  def close(self):
     """
     <Purpose>
         Closes a socket that is listening for messages.
@@ -1947,7 +1947,7 @@ class TCPServerSocket (object):
         
 
 
-  def getconnection_ipv6(self):
+  def getconnection(self):
     """
     <Purpose>
       Accepts an incoming connection to a listening TCP socket.
@@ -2041,7 +2041,7 @@ class TCPServerSocket (object):
       socket_lock.release()
 
 
-  def close_ipv6(self):
+  def close(self):
     """
     <Purpose>
       Closes the listening TCP socket.
