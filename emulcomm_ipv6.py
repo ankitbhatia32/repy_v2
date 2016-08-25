@@ -18,7 +18,7 @@ import time
 import errno
 import repy_constants
 from exception_hierarchy import *
-
+import emulcomm
 
 _BOUND_SOCKETS_IPv6 = {}
 
@@ -147,6 +147,43 @@ def _is_already_connected_exception(exceptionobj):
   
   # Return if the error name is in our white list
   return (errname in connected_errors)
+
+
+def _is_addr_in_use_exception(exceptionobj):
+  """
+  <Purpose>
+    Determines if a given error number indicates that the provided
+    localip / localport are already bound and that the unique
+    tuple is already in use.
+
+  <Arguments>
+    An exception object from a network call.
+
+  <Returns>
+    True if already in use, false otherwise
+  """
+  # Get the type
+  exception_type = type(exceptionobj)
+
+  # Only continue if the type is socket.error
+  if exception_type is not socket.error:
+    return False
+
+  # Get the error number
+  errnum = exceptionobj[0]
+
+  # Store a list of error messages meaning we are in use
+  in_use_errors = ["EADDRINUSE", "WSAEADDRINUSE"]
+
+  # Convert the errno to and error string name
+  try:
+    errname = errno.errorcode[errnum]
+  except Exception,e:
+    # The error is unknown for some reason...
+    errname = None
+  
+  # Return if the error name is in our white list
+  return (errname in in_use_errors)
 
 def _is_addr_unavailable_exception(exceptionobj):
   """
