@@ -695,7 +695,7 @@ USERCONTEXT_WRAPPER_INFO = {
   'listenformessage_ipv6' :
       {'func' : emulcomm_ipv6.listenformessage_ipv6,
        'args' : [Str(), Int()],
-       'return' : UDPServerSocket()},
+       'return' : UDPServerSocket_ipv6()},
   'listenformessage' :
       {'func' : emulcomm.listenformessage,
        'args' : [Str(), Int()],
@@ -838,7 +838,7 @@ TCP_SERVER_SOCKET_OBJECT_WRAPPER_INFO_IPv6 = {
   'getconnection' :
       {'func' : emulcomm_ipv6.TCPServerSocket.getconnection,
        'args' : [],
-       'return' : (Str(), Int(), TCPSocket())},
+       'return' : (Str(), Int(), TCPSocket_ipv6())},
 }
 
 UDP_SERVER_SOCKET_OBJECT_WRAPPER_INFO = {
