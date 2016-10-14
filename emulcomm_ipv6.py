@@ -1853,7 +1853,7 @@ class UDPServerSocket:
       # Try to get a message of any size.   (64K is the max that fits in the 
       # UDP header)
       message, addr = mysocketobj.recvfrom(65535)
-      remote_ip, remote_port = addr
+      remote_ip, remote_port = addr[:2]
 
       # Do some resource accounting
       if self.on_loopback:
@@ -2009,94 +2009,66 @@ class TCPServerSocket (object):
     socket_lock = self.sock_lock
 
     # Wait for netsend and netrecv resources
-
-    print "inside getconnection"
-
-
     if self.on_loopback:
-
-      print "inside on_loop"
-      
       nanny.tattle_quantity('looprecv',0)
       nanny.tattle_quantity('loopsend',0)
     else:
-      print "else on_loop"
       nanny.tattle_quantity('netrecv',0)
       nanny.tattle_quantity('netsend',0)
 
     # Acquire the lock
     socket_lock.acquire()
-    print "trying exception"
     try:
       # Get the socket itself. This must be done after
       # we acquire the lock because it is possible that the
       # socket was closed/re-opened or that it was set to None,
       # etc.
       socket = self.socketobj
-      print "got socket object"
+      #print "got socket object"
       if socket is None:
-        print "socket is none"
         raise KeyError # Indicates socket is closed
 
       # Try to accept
-      print "trying to accept"
       new_socket, remote_host_info = socket.accept()
-      print remote_host_info
-      print "socket, remote host"
-      remote_ip, remote_port, x,y = remote_host_info
-      print "remote_host_info"
+      remote_ip, remote_port = remote_host_info[:2]
+      
       # Get new_socket id to register new_socket with nanny
       new_sockid = id(new_socket)
-      print"new sockid"
       # Check if remote_ip is on loopback
       is_on_loopback = _is_loopback_ipaddr(remote_ip)
-      print "is on loopback"
       # Do some resource accounting
-      print "resource accounting"
       if self.on_loopback:
-        print "nanny is true"
         nanny.tattle_quantity('looprecv', 128)
         nanny.tattle_quantity('loopsend', 64)
       else:
-        print "nanny is false"
         nanny.tattle_quantity('netrecv', 128)
         nanny.tattle_quantity('netsend', 64)
 
       try:
-        print "nanny outsockets"
         nanny.tattle_add_item('outsockets', new_sockid)
       except ResourceExhaustedError:
-        print "resourse exhaust"
-        # Close the socket, and raise
         new_socket.close()
         raise
 
       wrapped_socket = EmulatedSocket(new_socket, is_on_loopback)
 
       # Return everything
-      print type(remote_ip)
-      print type(remote_port)
-      print type(wrapped_socket)
       return (remote_ip, remote_port, wrapped_socket)
 
     except KeyError:
-      print "KeyError"
       # Socket is closed
       raise SocketClosedLocal("The socket has been closed!")
   
     except RepyException:
-      print "RepyException"
       # Let these through from the inner block
       raise
 
     except Exception, e:
-      print "Exception e"
       # Check if this is a would-block error
       if _is_recoverable_network_exception(e):
         raise SocketWouldBlockError("No connections currently available!")
 
-      else:
-        print "Not recoverable error" 
+      else: 
         # Unexpected, close the socket, and then raise SocketClosedLocal
         _cleanup_socket(self)       
         raise SocketClosedLocal("Unexpected error, socket closed!")
