@@ -1853,7 +1853,10 @@ class UDPServerSocket:
       # Try to get a message of any size.   (64K is the max that fits in the 
       # UDP header)
       message, addr = mysocketobj.recvfrom(65535)
-      remote_ip, remote_port = addr[:2]
+      # for IPv6 only 'addr' returns a tuple as (remote_ip, remote_port, flow_info, scope_id)
+      # remote_ip & remote_port elements of the tuple is used for IPv6, flow_info & scope_id is neglected here
+      # flow_info, scope_id may be used in future
+      remote_ip, remote_port = addr[:2] 
 
       # Do some resource accounting
       if self.on_loopback:
@@ -2030,6 +2033,9 @@ class TCPServerSocket (object):
 
       # Try to accept
       new_socket, remote_host_info = socket.accept()
+      # for IPv6 only 'remote_host_info' returns a tuple as (remote_ip, remote_port, flow_info, scope_id)
+      # remote_ip & remote_port elements of tuple is used for IPv6, flow_info & scope_id is neglected here
+      # flow_info, scope_id may be used in future
       remote_ip, remote_port = remote_host_info[:2]
       
       # Get new_socket id to register new_socket with nanny
