@@ -1,4 +1,4 @@
-local_ip = '2001:700:4100:901::cf:69'
+local_ip = getmyip_ipv6()
 
 s = listenformessage_ipv6(local_ip, 4568)
 log(s)

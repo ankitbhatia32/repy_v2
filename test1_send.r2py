@@ -1,5 +1,5 @@
 dest_ip = '2001:700:4100:901::c6:6f'
-local_ip = '2001:700:4100:901::cf:69'
+local_ip = getmyip_ipv6()
 
 s = sendmessage_ipv6(dest_ip, 4568, 'Hello', local_ip, 4568)
 log(s)
