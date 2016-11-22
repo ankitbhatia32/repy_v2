@@ -592,7 +592,7 @@ def _get_localIP_to_remoteIP(connection_type, external_ip, external_port=80):
     sockobj.connect((external_ip, external_port))
 
     # Get the local connection information for this socket
-    (myip, localport) = sockobj.getsockname()
+    (myip, localport, flow_info, scope_id) = sockobj.getsockname()
       
   # Always close the socket
   finally:
