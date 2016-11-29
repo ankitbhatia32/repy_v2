@@ -1,12 +1,15 @@
 local_ip = getmyip_ipv6()
 
-s = listenformessage_ipv6(local_ip, 4568)
+s = listenformessage_ipv6(local_ip, 12345)
 
-while (s == True):
+log("Now listening.....")
+
+while True:
   try:
     (remoteip, remoteport, message) = s.getmessage()
+    break
   except SocketWouldBlockError:
     sleep(0.05)
 
-  finally:
-    s.close()
+
+  
