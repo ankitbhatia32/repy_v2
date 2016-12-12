@@ -32,18 +32,18 @@ MAXSENDSIZE = 1024*1024
 
 # send until it would block
 totalamountsent = 0
-while True:
+while totalamountsent < MAXSENDSIZE:
   try:
     amountsent = conn.send('h'*(MAXSENDSIZE-totalamountsent))
   except SocketWouldBlockError:
     # This should happen at some point.
     break
   
-  assert(amountsent > 0)
+ 
 
   totalamountsent = totalamountsent + amountsent
 
-  assert(MAXSENDSIZE != totalamountsent)
+  assert MAXSENDSIZE >= totalamountsent, "Could send more bytes than the message contained"
 
 
 totalamountrecvd = 0
