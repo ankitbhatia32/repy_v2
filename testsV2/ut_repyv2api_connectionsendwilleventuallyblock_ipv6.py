@@ -1,0 +1,63 @@
+"""
+Check that send will eventually block in different situations...
+"""
+#pragma repy restrictions.twoports
+
+localip = "::1"
+localport = 12345
+targetip = "::1"
+targetport = 12346
+timeout = 1.0
+
+
+tcpserversocket = listenforconnection_ipv6(targetip, targetport)
+
+conn = openconnection_ipv6(targetip, targetport, localip, localport, timeout)
+
+
+(ip, port, serverconn) = tcpserversocket.getconnection()
+
+assert(ip == localip)
+assert(port == localport)
+
+
+# shouldn't be able to buffer more than thins
+MAXSENDSIZE = 1024*1024
+
+# send until it would block
+totalamountsent = 0
+while totalamountsent < MAXSENDSIZE:
+  try:
+    amountsent = conn.send('h'*(MAXSENDSIZE-totalamountsent))
+  except SocketWouldBlockError:
+    # This should happen at some point.
+    break
+
+
+  totalamountsent = totalamountsent + amountsent
+
+  assert MAXSENDSIZE >= totalamountsent, "Could send more bytes than the message contained"
+
+
+totalamountrecvd = 0
+
+while totalamountrecvd < totalamountsent:
+  
+  # now the server should be able to recv that amount of data...
+  data = serverconn.recv(totalamountsent-totalamountrecvd)
+
+  totalamountrecvd = totalamountrecvd + len(data)
+
+
+assert totalamountrecvd == totalamountsent
+
+
+# but no more
+try: 
+  serverconn.recv(1)
+except SocketWouldBlockError:
+  pass
+else:
+  log("Should not be able to recv more than was sent...",'\n')
+
+
