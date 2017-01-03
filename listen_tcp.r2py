@@ -6,7 +6,7 @@ log("Now Listening.......\n")
 
 while True:
   try:
-    (remoteip, remoteport, message) = s.getmessage()
+    (remoteip, remoteport, message) = s.getconnection()
     log(message)
     break
   except SocketWouldBlockError:
