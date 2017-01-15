@@ -1,13 +1,15 @@
-local_ip = getmyip_ipv6()
+localip = getmyip_ipv6()
+localport = 12346
 
-s = listenforconnection_ipv6(local_ip, 12346)
+
+s = listenforconnection_ipv6(localip, localport)
+
+(remoteip, remoteport, sobj) = s.getconnection()
 
 log("Now Listening.......\n")
 
 while True:
-  try:
-    (remoteip, remoteport, message) = s.getconnection()
-    log(message)
-    break
-  except SocketWouldBlockError:
-    sleep(0.05)
+  data = conn.recv(1)
+  log(data)
+
+
