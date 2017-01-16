@@ -1,11 +1,13 @@
-target_ip = '2001:700:4100:901::c6:6f'
+target_ip = "2001:700:4100:901::77:6e"
 local_ip = getmyip_ipv6()
-timeout = 1.0
+timeout = 10.0
 
 conn = openconnection_ipv6(target_ip, 12346, local_ip, 12345, timeout)
 
 while True:
   try:
-    amountsent = sobj.send("Hello")
+    amountsent = conn.send("Hello")
+    log(amountsent)
+    break
   except SocketWouldBlockError:
-    break  
+    break
