@@ -4,10 +4,9 @@ timeout = 10.0
 
 conn = openconnection_ipv6(target_ip, 12346, local_ip, 12345, timeout)
 
-while True:
-  try:
-    amountsent = conn.send("Hello")
-    log(amountsent)
-    break
-  except SocketWouldBlockError:
-    break
+try:
+  amountsent = conn.send("Hello")
+  log(amountsent)
+
+except SocketWouldBlockError:
+  pass
