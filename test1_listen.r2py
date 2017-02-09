@@ -2,7 +2,7 @@ local_ip = getmyip_ipv6()
 
 s = listenformessage_ipv6(local_ip, 12345)
 
-log("Now listening.....")
+log("Now listening.....\n")
 
 while True:
   try:
@@ -11,6 +11,3 @@ while True:
     break
   except SocketWouldBlockError:
     sleep(0.05)
-
-
-  
