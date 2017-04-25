@@ -89,7 +89,7 @@
       public methods and so no *_WRAPPER_INFO dictionaries are defined for them.
   
     NamespaceObjectWrapper
-    NamespaceAPIFunctionWrapper
+    NamespaceAPIFunction Wrapper
   
       The above two classes are the only two types of objects that will be
       allowed in untrusted code. In fact, instances of NamespaceAPIFunctionWrapper
@@ -119,9 +119,14 @@ import nonportable
 import safe # Used to get SafeDict
 import tracebackrepy
 import virtual_namespace
+  
 
 from exception_hierarchy import *
 
+#import sys
+#from os import path
+#sys.path.append( path.dirname(path.dirname( path.abspath(__file__) ) ) ) 
+from ..multiply_test import *
 # Save a copy of a few functions not available at runtime.
 _saved_getattr = getattr
 _saved_callable = callable
@@ -605,6 +610,10 @@ USERCONTEXT_WRAPPER_INFO = {
       {'func' : emulcomm.getmyip,
        'args' : [],
        'return' : Str()},
+  'muly' :
+      {'func' : multiply_test.multiplication,
+       'args' : [Int()],
+       'return' : Int()},     
   'sendmessage' :
       {'func' : emulcomm.sendmessage,
        'args' : [Str(), Int(), Str(), Str(), Int()],
