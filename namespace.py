@@ -119,14 +119,16 @@ import nonportable
 import safe # Used to get SafeDict
 import tracebackrepy
 import virtual_namespace
-  
 
 from exception_hierarchy import *
 
-#import sys
-#from os import path
-#sys.path.append( path.dirname(path.dirname( path.abspath(__file__) ) ) ) 
-from ..multiply_test import *
+import sys
+sys.path.append('/./extensions')
+
+# from ..multiply_test import *
+
+import extensions.multiply_test
+
 # Save a copy of a few functions not available at runtime.
 _saved_getattr = getattr
 _saved_callable = callable
