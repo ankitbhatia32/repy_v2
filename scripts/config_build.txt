@@ -5,7 +5,7 @@ DEPENDENCIES/portability/*
 DEPENDENCIES/seattlelib_v2/*
 DEPENDENCIES/seash/*
 DEPENDENCIES/common/*
-extensions/*
+./extensions/* extensions
 
 # Tests
 test DEPENDENCIES/utf/*
