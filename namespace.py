@@ -122,12 +122,9 @@ import virtual_namespace
 
 from exception_hierarchy import *
 
-import sys
-sys.path.append('/./extensions')
-
-# from ..multiply_test import *
-
 import extensions.multiply_test
+import extensions.ipv6hostname
+#from extensions import *
 
 # Save a copy of a few functions not available at runtime.
 _saved_getattr = getattr
@@ -608,12 +605,16 @@ USERCONTEXT_WRAPPER_INFO = {
       {'func' : emulcomm.gethostbyname,
        'args' : [Str()],
        'return' : Str()},
+  'ipv6addr' :
+      {'func' : extensions.ipv6hostname.getAddrip6,
+       'args' : [Str()],
+       'return' : List()},
   'getmyip' :
       {'func' : emulcomm.getmyip,
        'args' : [],
        'return' : Str()},
   'muly' :
-      {'func' : multiply_test.multiplication,
+      {'func' : extensions.multiply_test.multiplication,
        'args' : [Int()],
        'return' : Int()},     
   'sendmessage' :
