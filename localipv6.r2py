@@ -1,0 +1,2 @@
+s = getmyip_ipv6()
+log(s)
