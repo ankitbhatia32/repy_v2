@@ -119,19 +119,12 @@ import nonportable
 import safe # Used to get SafeDict
 import tracebackrepy
 import virtual_namespace
-import ipv6hostname
-import multiply_test
-import UDP_server
-import UDP_client
-import TCP_server
-import TCP_client
-#import emulcomm_ipv6
 
 from exception_hierarchy import *
 
-import extensions.multiply_test
-import extensions.ipv6hostname
-import extensions.ipv6.emulcomm_ipv6
+import extensions.multiply_test # Module test case for multiplication function
+import extensions.ipv6hostname  # Module test case to get ipv6hostname
+import extensions.ipv6.emulcomm_ipv6  # Module for IPv6 extension to repy_v2
 
 # Save a copy of a few functions not available at runtime.
 _saved_getattr = getattr
@@ -648,24 +641,8 @@ class DictOrSafeDict(ObjectProcessor):
 # the basis for what is populated in the user context. Anything function
 # defined here will be wrapped and made available to untrusted user code.
 USERCONTEXT_WRAPPER_INFO = {
-  'TCP_client_test' :
-      {'func' : TCP_client.tcpclientconnect,
-       'args' : [],
-       'return' : Str()},
-  'TCP_server_test' :
-      {'func' : TCP_server.tcpserverconnect,
-       'args' : [],
-       'return' : Str()},
-  'UDP_client_test' :
-      {'func' : UDP_client.udpclientconnect,
-       'args' : [],
-       'return' : Int()},
-  'UDP_server_test' :
-      {'func' : UDP_server.udpserverconnect,
-       'args' : [],
-       'return' : Str()},
   'muly' :
-      {'func' : multiply_test.multiplication,
+      {'func' : extensions.multiply_test.multiplication,
        'args' : [Int()],
        'return' : Int()},
   'ipv6addr' :
@@ -673,7 +650,7 @@ USERCONTEXT_WRAPPER_INFO = {
        'args' : [Str()],
        'return' : List()},
   'getAddripv6' :
-      {'func' : emulcomm_ipv6.getAddripv6,
+      {'func' : extensions.ipv6.emulcomm_ipv6.getAddripv6,
        'args' : [Str()],
        'return' : ListOfStr()},
   'gethostbyname' :
@@ -689,7 +666,7 @@ USERCONTEXT_WRAPPER_INFO = {
        'args' : [],
        'return' : Str()},
   'sendmessage_ipv6' :
-      {'func' : emulcomm_ipv6.sendmessage_ipv6,
+      {'func' : extensions.ipv6.emulcomm_ipv6.sendmessage_ipv6,
        'args' : [Str(), Int(), Str(), Str(), Int()],
        'return' : Int()},
   'sendmessage' :
@@ -697,7 +674,7 @@ USERCONTEXT_WRAPPER_INFO = {
        'args' : [Str(), Int(), Str(), Str(), Int()],
        'return' : Int()},
   'listenformessage_ipv6' :
-      {'func' : emulcomm_ipv6.listenformessage_ipv6,
+      {'func' : extensions.ipv6.emulcomm_ipv6.listenformessage_ipv6,
        'args' : [Str(), Int()],
        'return' : UDPServerSocket_ipv6()},
   'listenformessage' :
@@ -705,7 +682,7 @@ USERCONTEXT_WRAPPER_INFO = {
        'args' : [Str(), Int()],
        'return' : UDPServerSocket()},
   'openconnection_ipv6' :
-      {'func' : emulcomm_ipv6.openconnection_ipv6,
+      {'func' : extensions.ipv6.emulcomm_ipv6.openconnection_ipv6,
        'args' : [Str(), Int(), Str(), Int(), Float()],
        'return' : TCPSocket_ipv6()},
   'openconnection' :
@@ -715,7 +692,7 @@ USERCONTEXT_WRAPPER_INFO = {
 #                 ConnectionRefusedError, TimeoutError, RepyArgumentError],
        'return' : TCPSocket()},
   'listenforconnection_ipv6' :
-      {'func' : emulcomm_ipv6.listenforconnection_ipv6,
+      {'func' : extensions.ipv6.emulcomm_ipv6.listenforconnection_ipv6,
        'args' : [Str(), Int()],
        'return' : TCPServerSocket_ipv6()},
   'listenforconnection' :
@@ -808,15 +785,15 @@ TCP_SOCKET_OBJECT_WRAPPER_INFO = {
 
 TCP_SOCKET_OBJECT_WRAPPER_INFO_IPv6 = {
   'close' :
-      {'func' : emulcomm_ipv6.EmulatedSocket.close,
+      {'func' : extensions.ipv6.emulcomm_ipv6.EmulatedSocket.close,
        'args' : [],
        'return' : Bool()},
   'recv' :
-      {'func' : emulcomm_ipv6.EmulatedSocket.recv,
+      {'func' : extensions.ipv6.emulcomm_ipv6.EmulatedSocket.recv,
        'args' : [Int(min=1)],
        'return' : Str()},
   'send' :
-      {'func' : emulcomm_ipv6.EmulatedSocket.send,
+      {'func' : extensions.ipv6.emulcomm_ipv6.EmulatedSocket.send,
        'args' : [Str()],
        'return' : Int(min=0)},
 }
@@ -836,11 +813,11 @@ TCP_SERVER_SOCKET_OBJECT_WRAPPER_INFO = {
 
 TCP_SERVER_SOCKET_OBJECT_WRAPPER_INFO_IPv6 = {
   'close' :
-      {'func' : emulcomm_ipv6.TCPServerSocket.close,
+      {'func' : extensions.ipv6.emulcomm_ipv6.TCPServerSocket.close,
        'args' : [],
        'return' : Bool()},
   'getconnection' :
-      {'func' : emulcomm_ipv6.TCPServerSocket.getconnection,
+      {'func' : extensions.ipv6.emulcomm_ipv6.TCPServerSocket.getconnection,
        'args' : [],
        'return' : (Str(), Int(), TCPSocket_ipv6())},
 }
@@ -858,11 +835,11 @@ UDP_SERVER_SOCKET_OBJECT_WRAPPER_INFO = {
 
 UDP_SERVER_SOCKET_OBJECT_WRAPPER_INFO_IPv6 = {
   'close' :
-      {'func' : emulcomm_ipv6.UDPServerSocket.close,
+      {'func' : extensions.ipv6.emulcomm_ipv6.UDPServerSocket.close,
        'args' : [],
        'return' : Bool()},
   'getmessage' :
-      {'func' : emulcomm_ipv6.UDPServerSocket.getmessage,
+      {'func' : extensions.ipv6.emulcomm_ipv6.UDPServerSocket.getmessage,
        'args' : [],
        'return' : (Str(), Int(), Str())},
 }
