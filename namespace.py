@@ -525,7 +525,7 @@ class UDPServerSocket_ipv6(ObjectProcessor):
   """Allows UDPServerSocket objects."""
 
   def check(self, val):
-    if not isinstance(val, emulcomm_ipv6.UDPServerSocket):
+    if not isinstance(val, extensions.ipv6.emulcomm_ipv6.UDPServerSocket):
       raise RepyArgumentError("Invalid type %s" % type(val))
 
 
@@ -552,7 +552,7 @@ class TCPServerSocket_ipv6(ObjectProcessor):
   """Allows TCPServerSocket objects."""
 
   def check(self, val):
-    if not isinstance(val, emulcomm_ipv6.TCPServerSocket):
+    if not isinstance(val, extensions.ipv6.emulcomm_ipv6.TCPServerSocket):
       raise RepyArgumentError("Invalid type %s" % type(val))
 
 
@@ -579,7 +579,7 @@ class TCPSocket_ipv6(ObjectProcessor):
   """Allows TCPSocket objects."""
 
   def check(self, val):
-    if not isinstance(val, emulcomm_ipv6.EmulatedSocket):
+    if not isinstance(val, extensions.ipv6.emulcomm_ipv6.EmulatedSocket):
       raise RepyArgumentError("Invalid type %s" % type(val))
 
 
@@ -983,8 +983,8 @@ def _copy(obj, objectmap=None):
     # is wrapped and the client does not have access to it, it's safe to not
     # wrap it.
     elif isinstance(obj, (NamespaceObjectWrapper, emulfile.emulated_file,
-                          emulcomm.EmulatedSocket, emulcomm_ipv6.EmulatedSocket, emulcomm.TCPServerSocket, emulcomm_ipv6.TCPServerSocket,
-                          emulcomm.UDPServerSocket, emulcomm_ipv6.UDPServerSocket, thread.LockType,
+                          emulcomm.EmulatedSocket, extensions.ipv6.emulcomm_ipv6.EmulatedSocket, emulcomm.TCPServerSocket, extensions.ipv6.emulcomm_ipv6.TCPServerSocket,
+                          emulcomm.UDPServerSocket, extensions.ipv6.emulcomm_ipv6.UDPServerSocket, thread.LockType,
                           virtual_namespace.VirtualNamespace)):
       return obj
 
@@ -1306,8 +1306,8 @@ class NamespaceAPIFunctionWrapper(object):
         if self.__is_method:
           # Sanity check the object we're adding back in as the "self" argument.
           if not isinstance(args[0], (NamespaceObjectWrapper, emulfile.emulated_file,
-                                      emulcomm.EmulatedSocket, emulcomm_ipv6.EmulatedSocket, emulcomm.TCPServerSocket, emulcomm_ipv6.TCPServerSocket,
-                                      emulcomm.UDPServerSocket, emulcomm_ipv6.UDPServerSocket, thread.LockType,
+                                      emulcomm.EmulatedSocket, extensions.ipv6.emulcomm_ipv6.EmulatedSocket, emulcomm.TCPServerSocket, extensions.ipv6.emulcomm_ipv6.TCPServerSocket,
+                                      emulcomm.UDPServerSocket, extensions.ipv6.emulcomm_ipv6.UDPServerSocket, thread.LockType,
                                       virtual_namespace.VirtualNamespace)):
             raise NamespaceInternalError("Wrong type for 'self' argument.")
           # If it's a method but the function was not provided as a string, we
