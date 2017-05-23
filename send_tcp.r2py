@@ -1,0 +1,12 @@
+target_ip = "2001:700:4100:901::77:6e"
+local_ip = getmyip_ipv6()
+timeout = 10.0
+
+conn = openconnection_ipv6(target_ip, 12346, local_ip, 12345, timeout)
+
+try:
+  amountsent = conn.send("Hello")
+  log(amountsent)
+
+except SocketWouldBlockError:
+  pass
