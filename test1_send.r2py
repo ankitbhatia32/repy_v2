@@ -1,5 +1,0 @@
-dest_ip = '2001:700:4100:901::c6:6f'
-local_ip = getmyip_ipv6()
-
-s = sendmessage_ipv6(dest_ip, 12345, 'Hello', local_ip, 12346)
-log(s)
