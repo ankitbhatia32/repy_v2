@@ -122,8 +122,6 @@ import virtual_namespace
 
 from exception_hierarchy import *
 
-import extensions.multiply_test # Module test case for multiplication function
-import extensions.ipv6hostname  # Module test case to get ipv6hostname
 import extensions.ipv6.emulcomm_ipv6  # Module for IPv6 extension to repy_v2
 
 # Save a copy of a few functions not available at runtime.
