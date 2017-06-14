@@ -1,55 +1,123 @@
+"""
+   Author: Justin Cappos, Armon Dadgar
+
+   Start Date: 27 June 2008
+
+   Description:
+
+   This is a collection of communications routines that provide a programmer 
+   with a reasonable environment.   This is used by repy.py to provide a 
+   highly restricted (but usable) environment.
+"""
+
 import socket 
 
+# Armon: Used to check if a socket is ready
 import select 
 
+# socket uses getattr and setattr.   We need to make these available to it...
 socket.getattr = getattr
 socket.setattr = setattr
 
+# needed to set threads for recvmess and waitforconn
 import threading
-
+# threading in python2.7 uses hasattr. It needs to be made available.
 threading.hasattr = hasattr
 
+# So I can exit all threads when an error occurs or do select
 import harshexit
+
+# Needed for finding out info about sockets, available interfaces, etc
 import nonportable 
+
+# So I can print a clean traceback when an error happens
 import tracebackrepy
+
+# accounting
+# id(sock) will be used to register and unregister sockets with nanny 
 import nanny
+
+# give me uniqueIDs for the comminfo table
 import idhelper
+
+# for sleep
 import time
+
+# Armon: Used for decoding the error messages
 import errno
+
+# Armon: Used for getting the constant IP values for resolving our external IP
 import repy_constants
+
+# Get the exceptions
 from exception_hierarchy import *
+
+
 import emulcomm
 
-_BOUND_SOCKETS_IPv6 = {}
+###### Module Data
 
+# This is a library of all currently bound sockets. Since multiple 
+# UDP bindings on a single port is hairy, we store bound sockets 
+# here, and use them for both sending and receiving if they are 
+# available. This feels slightly byzantine, but it allows us to 
+# avoid modifying the repy API.
+#
+# Format of entries is as follows:
+# Key - 3-tuple of ("UDP", IP, Port)
+# Val - Bound socket object
+_BOUND_SOCKETS_IPv6 = {} # Ticket = 1015 (Resolved)
+
+# If we have a preference for an IP/Interface this flag is set to True
 user_ip_interface_preferences_ipv6 = False
 
+# Do we allow non-specified IPs
 allow_nonspecifed_ips_ipv6 = True
 
+# Armon: Specified the list of allowed IP and Interfaces in order of their preference
+# The basic structure is list of tuples (IP, Value), IP is True if its an IP, False if its an interface
 user_specified_ip_interface_list_ipv6 = []
 
+# This list caches the allowed IP's
+# It is updated at the launch of repy, or by calls to getmyip and update_ip_cache
+# NOTE: The loopback address 127.0.0.1 is always permitted. update_ip_cache will always add this
+# if it is not specified explicitly by the user
 allowediplist_ipv6 =[]
+cachelock = threading.Lock() # This allows only a single simultaneous cache update
 
-cachelock = threading.Lock()
 
+##### Internal Functions
 
+# Determines if a specified IPv6 address is allowed in the context of user settings 
 def _ip_is_allowed_ipv6(ip):
+  """
+  <Purpose>
+    Determines if a given IP is allowed, by checking against the cached allowed IP's.
   
-
+  <Arguments>
+    ip: The IP address to search for.
+  
+  <Returns>
+    True, if allowed. False, otherwise.
+  """  
   global allowediplist_ipv6
   global user_ip_interface_preferences_ipv6
   global allow_nonspecifed_ips_ipv6
 
+  # If there is no preference, anything goes
+  # same with allow_nonspecified_ips
   if not user_ip_interface_preferences_ipv6 or allow_nonspecifed_ips_ipv6:
     return True
 
   return (ip in allowediplist_ipv6)
 
+# Only appends the elem to lst if the elem is unique
 def _unique_append(lst, elem):
   if elem not in lst:
   	lst.append(elem)
 
-
+# This function updates the allowed IPv6 cache
+# It iterates through all possible IPv6's and stores ones which are bindable as part of the allowediplist
 def update_ip_cache_ipv6():
   global allowediplist_ipv6
   global user_ip_interface_preferences_ipv6
